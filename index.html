@@ -1,0 +1,30 @@
+<input id="pass" placeholder="Şifre">
+<button onclick="login()">GİR</button>
+
+<script>
+const fp = btoa(navigator.userAgent + screen.width);
+
+async function login() {
+  const password = document.getElementById("pass").value;
+
+  const res = await fetch("/login", {
+    method: "POST",
+    body: JSON.stringify({ password, fingerprint: fp })
+  });
+
+  if (res.status !== 200) return alert("hatalı");
+
+  const data = await res.json();
+
+  if (data.role === "admin") {
+    location.href = "admin.html";
+  } else {
+    if (data.firstTime) {
+      localStorage.setItem("fp", fp);
+      location.href = "intro.html";
+    } else {
+      location.href = "app.html";
+    }
+  }
+}
+</script>
