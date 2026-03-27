@@ -1,0 +1,28 @@
+<div id="sidebar"></div>
+<div id="chat"></div>
+
+<input id="msg">
+<button onclick="send()">→</button>
+
+<script>
+const fp = localStorage.getItem("fp");
+
+async function send() {
+  const prompt = msg.value;
+
+  const res = await fetch("/chat", {
+    method: "POST",
+    body: JSON.stringify({ prompt, fingerprint: fp })
+  });
+
+  const data = await res.json();
+
+  chat.innerHTML += `<div>${prompt}</div>`;
+  chat.innerHTML += `<div>${data.result}</div>`;
+
+  // geçmiş
+  sidebar.innerHTML = data.chats
+    .map(c => `<div>${c.prompt}</div>`)
+    .join("");
+}
+</script>
