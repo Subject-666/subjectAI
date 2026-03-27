@@ -1,0 +1,15 @@
+<input id="newpass" placeholder="Yeni şifre">
+<button onclick="setPass()">Kaydet</button>
+
+<script>
+async function setPass() {
+  const newPassword = document.getElementById("newpass").value;
+
+  await fetch("/set-password", {
+    method: "POST",
+    body: JSON.stringify({ newPassword })
+  });
+
+  alert("kaydedildi");
+}
+</script>
