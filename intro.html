@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SubjectAI | Revelation</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;800&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin:0;
+    background:#000;
+    color:#fff;
+    font-family:'Inter',sans-serif;
+    overflow:hidden;
+}
+
+/* 🌌 Glow */
+#glow {
+    position:fixed;
+    width:70vw;
+    height:70vw;
+    background:radial-gradient(circle, rgba(255,255,255,0.05), transparent 60%);
+    border-radius:50%;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    animation: pulse 6s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%,100% { transform:translate(-50%,-50%) scale(1); opacity:0.4;}
+    50% { transform:translate(-50%,-50%) scale(1.4); opacity:0.8;}
+}
+
+/* 🎥 Stage */
+#stage {
+    position:fixed;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
+
+/* ✨ Text */
+.text {
+    position:absolute;
+    font-size:1.6rem;
+    letter-spacing:10px;
+    opacity:0;
+    transform:translateY(40px);
+    transition:1s ease;
+}
+
+/* 💥 Logo */
+#logo {
+    font-size:3.5rem;
+    letter-spacing:20px;
+    font-weight:800;
+    opacity:0;
+    transform:scale(2);
+    text-shadow:0 0 40px #fff;
+}
+
+/* ⚡ flash */
+#flash {
+    position:fixed;
+    inset:0;
+    background:#fff;
+    opacity:0;
+    pointer-events:none;
+}
+
+/* 🧠 gate */
+#gate {
+    position:fixed;
+    inset:0;
+    background:#000;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:999;
+}
+
+#gate span {
+    color:#555;
+    letter-spacing:6px;
+    animation:blink 1.5s infinite;
+}
+
+@keyframes blink {
+    0%,100% {opacity:0.3}
+    50% {opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<div id="gate"><span>SİSTEMİ BAŞLAT</span></div>
+
+<div id="glow"></div>
+<div id="flash"></div>
+
+<div id="stage">
+    <div id="t1" class="text">Subject_666 tarafından...</div>
+    <div id="t2" class="text">Grok Gemini ChatGPT Claude</div>
+    <div id="t3" class="text">Büyük devler tek bir yerde</div>
+    <div id="t4" class="text">Karşınızda kısa süreliğine..</div>
+    <div id="t5" class="text">Size özel olarak verilmiş</div>
+    <div id="t6" class="text">Yapay Zeka...</div>
+
+    <div id="logo">SUBJECT AI</div>
+</div>
+
+<audio id="music" src="ACIDO III (Over Slowed).mp3"></audio>
+
+<script>
+const music = document.getElementById("music");
+const gate = document.getElementById("gate");
+const flash = document.getElementById("flash");
+
+const beats = [
+    {id:"t1", time:6.3},
+    {id:"t2", time:10.2},
+    {id:"t3", time:16.1},
+    {id:"t4", time:21.2},
+    {id:"t5", time:26.5},
+    {id:"t6", time:32.1},
+    {id:"logo", time:34.5}
+];
+
+gate.onclick = () => {
+    gate.style.opacity = "0";
+    setTimeout(()=>gate.remove(),800);
+    music.play();
+    start();
+};
+
+function hitFlash(){
+    flash.style.opacity="1";
+    setTimeout(()=>flash.style.opacity="0",120);
+}
+
+function show(id){
+    document.querySelectorAll(".text").forEach(t=>t.style.opacity="0");
+    const el = document.getElementById(id);
+
+    if(id==="logo"){
+        el.style.opacity="1";
+        el.style.transform="scale(1)";
+    } else {
+        el.style.opacity="1";
+        el.style.transform="translateY(0)";
+    }
+
+    hitFlash();
+}
+
+function start(){
+    beats.forEach(b=>{
+        setTimeout(()=>show(b.id), b.time*1000);
+    });
+
+    // 🎬 FINAL CINEMA EXIT
+    setTimeout(()=>{
+        document.body.style.transition="1s";
+        document.body.style.opacity="0";
+
+        setTimeout(()=>{
+            window.location.href="app.html";
+        },1000);
+
+    }, 38000);
+}
+</script>
+
+</body>
+</html>
