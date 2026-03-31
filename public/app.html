@@ -1,28 +1,97 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>SubjectAI</title>
+
+<style>
+body {
+  margin:0;
+  background:#050505;
+  color:#fff;
+  font-family:Inter;
+  display:flex;
+}
+
+/* SIDEBAR */
+#sidebar {
+  width:260px;
+  background:#0f0f12;
+  border-right:1px solid #222;
+  padding:20px;
+}
+
+/* CHAT */
+#chat {
+  flex:1;
+  padding:30px;
+  overflow:auto;
+}
+
+/* MESSAGES */
+.msg {
+  margin-bottom:20px;
+  padding:15px;
+  border-radius:12px;
+  background:#111;
+}
+
+.ai { border-left:3px solid #fff; }
+.gemini { border-left:3px solid cyan; }
+.sim { border-left:3px solid orange; }
+
+input {
+  width:80%;
+  padding:12px;
+  background:#111;
+  border:1px solid #333;
+  color:#fff;
+}
+
+button {
+  padding:12px;
+  background:#fff;
+  border:none;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
 <div id="sidebar"></div>
+
+<div style="flex:1;">
 <div id="chat"></div>
 
 <input id="msg">
 <button onclick="send()">→</button>
+</div>
 
 <script>
-const fp = localStorage.getItem("fp");
+const WORKER="https://subjectai.emrevemiralp.workers.dev";
+const fp=localStorage.getItem("fp");
 
-async function send() {
-  const prompt = msg.value;
+async function send(){
+ const prompt=msg.value;
 
-  const res = await fetch("/chat", {
-    method: "POST",
-    body: JSON.stringify({ prompt, fingerprint: fp })
-  });
+ const res=await fetch(WORKER+"/chat",{
+  method:"POST",
+  body:JSON.stringify({prompt,fingerprint:fp})
+ });
 
-  const data = await res.json();
+ const data=await res.json();
 
-  chat.innerHTML += `<div>${prompt}</div>`;
-  chat.innerHTML += `<div>${data.result}</div>`;
+ chat.innerHTML+=`<div class="msg">🧑 ${prompt}</div>`;
+ chat.innerHTML+=`<div class="msg sim">🤖 Simulated<br>${data.simulated}</div>`;
+ chat.innerHTML+=`<div class="msg gemini">🌐 Gemini<br>${data.gemini}</div>`;
+ chat.innerHTML+=`<div class="msg ai">🧠 Final AI<br>${data.result}</div>`;
 
-  // geçmiş
-  sidebar.innerHTML = data.chats
-    .map(c => `<div>${c.prompt}</div>`)
-    .join("");
+ sidebar.innerHTML=data.chats.map(c=>`<div>${c.prompt}</div>`).join("");
+
+ msg.value="";
 }
 </script>
+
+</body>
+</html>
