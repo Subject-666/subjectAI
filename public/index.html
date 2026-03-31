@@ -2,68 +2,139 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>SubjectAI | Access</title>
+<title>SubjectAI</title>
+
 <style>
 body {
-    background:#000;
-    color:#fff;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    height:100vh;
-    font-family:Arial;
+  margin:0;
+  font-family:Arial;
+  background:#000;
+  color:#fff;
+  display:flex;
+  height:100vh;
 }
-.box {
-    text-align:center;
+
+/* LOGIN */
+#login {
+  margin:auto;
+  text-align:center;
 }
+
 input {
-    padding:12px;
-    background:#111;
-    border:1px solid #333;
-    color:#fff;
+  padding:10px;
+  background:#111;
+  border:1px solid #333;
+  color:#fff;
 }
+
 button {
-    padding:12px;
-    background:#fff;
-    border:none;
-    cursor:pointer;
+  padding:10px;
+  background:#fff;
+  border:none;
+  cursor:pointer;
+}
+
+/* APP */
+#app {
+  display:none;
+  width:100%;
+}
+
+#sidebar {
+  width:250px;
+  border-right:1px solid #222;
+  padding:10px;
+}
+
+#chat {
+  flex:1;
+  padding:10px;
+}
+
+.container {
+  display:flex;
+  width:100%;
 }
 </style>
 </head>
+
 <body>
 
-<div class="box">
-    <h2>ACCESS REQUIRED</h2>
-    <input id="pass" placeholder="Şifre">
-    <button onclick="login()">GİR</button>
+<!-- LOGIN -->
+<div id="login">
+  <h2>ACCESS</h2>
+  <input id="pass" placeholder="Şifre">
+  <button onclick="login()">GİR</button>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="container">
+    <div id="sidebar"></div>
+
+    <div style="flex:1;">
+      <div id="chat"></div>
+
+      <input id="msg">
+      <button onclick="send()">→</button>
+    </div>
+  </div>
 </div>
 
 <script>
+const WORKER = "subjectai.emrevemiralp.workers.dev"; // 🔥 BURAYI DEĞİŞTİR
+
 const fp = btoa(navigator.userAgent + screen.width);
 
+// 🔐 LOGIN
 async function login() {
-  const password = document.getElementById("pass").value;
+  const password = pass.value;
 
-  const res = await fetch("/login", {
+  const res = await fetch(WORKER + "/login", {
     method: "POST",
     body: JSON.stringify({ password, fingerprint: fp })
   });
 
-  if (res.status !== 200) return alert("Hatalı şifre");
+  if (res.status !== 200) {
+    alert("Hatalı şifre");
+    return;
+  }
 
   const data = await res.json();
 
   if (data.role === "admin") {
-    location.href = "admin.html";
-  } else {
-    localStorage.setItem("fp", fp);
-
-    if (data.firstTime) {
-      location.href = "intro.html";
-    } else {
-      location.href = "app.html";
-    }
+    const newPass = prompt("Yeni şifre belirle:");
+    await fetch(WORKER + "/set-password", {
+      method: "POST",
+      body: JSON.stringify({ newPassword: newPass })
+    });
+    alert("Şifre kaydedildi");
+    return;
   }
+
+  localStorage.setItem("fp", fp);
+
+  document.getElementById("login").style.display = "none";
+  document.getElementById("app").style.display = "flex";
+}
+
+// 💬 CHAT
+async function send() {
+  const prompt = msg.value;
+
+  const res = await fetch(WORKER + "/chat", {
+    method: "POST",
+    body: JSON.stringify({ prompt, fingerprint: fp })
+  });
+
+  const data = await res.json();
+
+  chat.innerHTML += `<div><b>Sen:</b> ${prompt}</div>`;
+  chat.innerHTML += `<div><b>AI:</b> ${data.result}</div>`;
+
+  sidebar.innerHTML = data.chats.map(c => `<div>${c.prompt}</div>`).join("");
+
+  msg.value = "";
 }
 </script>
 
