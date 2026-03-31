@@ -1,15 +1,22 @@
-<input id="newpass" placeholder="Yeni şifre">
+<!DOCTYPE html>
+<html>
+<body style="background:#000;color:#fff;text-align:center;margin-top:100px;">
+
+<h2>Admin Panel</h2>
+<input id="newpass">
 <button onclick="setPass()">Kaydet</button>
 
 <script>
-async function setPass() {
-  const newPassword = document.getElementById("newpass").value;
+const WORKER="https://subjectai.emrevemiralp.workers.dev";
 
-  await fetch("/set-password", {
-    method: "POST",
-    body: JSON.stringify({ newPassword })
-  });
-
-  alert("kaydedildi");
+async function setPass(){
+ await fetch(WORKER+"/set-password",{
+  method:"POST",
+  body:JSON.stringify({newPassword:newpass.value})
+ });
+ alert("Kaydedildi");
 }
 </script>
+
+</body>
+</html>
